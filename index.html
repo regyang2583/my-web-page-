@@ -20,7 +20,7 @@
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft JhengHei', 'PingFang TC', sans-serif; background-color: var(--background-color); margin: 0; padding: 0; line-height: 1.6; }
         .site-wrapper { max-width: 1200px; margin: 0 auto; padding: 20px; }
         .page-view { display: block; transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out; }
-        .hidden { opacity: 0; transform: translateY(20px); pointer-events: none; position: absolute; top: 0; left: 0; right: 0; z-index: -1; }
+        .hidden { opacity: 0; transform: translateY(20px); pointer-events: none; position: absolute; top: 0; left: 0; right: 0; z-index: -1; visibility: hidden; }
         .site-header { text-align: center; padding: 40px 20px; background: var(--card-background); border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 30px; }
         .site-header h1 { color: var(--primary-dark-blue); margin: 0; font-size: 2.8em; letter-spacing: 1px; }
         .site-header p { color: var(--text-light); font-size: 1.2em; margin-top: 15px; max-width: 700px; margin-left: auto; margin-right: auto; line-height: 1.8; }
@@ -93,14 +93,15 @@
 <body>
 
     <div id="top" class="site-wrapper">
-        <!-- *** 標頭已整合品牌理念 *** -->
-        <header class="site-header">
-            <h1>域向室內設計</h1>
-            <p>「域」代表空間的探索，「向」是生活的嚮往。我們秉持匠心精神，傾聽您的需求，透過精準的設計與嚴謹的施工，將您的生活態度融入空間的每一處細節。</p>
-        </header>
-
+        
         <!-- ======================= 主頁：包含所有內容 ======================= -->
         <main id="packages-view" class="page-view">
+            
+            <!-- *** 標頭現在是主頁的一部分 *** -->
+            <header class="site-header">
+                <h1>域向室內設計</h1>
+                <p>「域」代表空間的探索，「向」是生活的嚮往。我們秉持匠心精神,傾聽您的需求,透過精準的設計與嚴謹的施工,將您的生活態度融入空間的每一處細節。</p>
+            </header>
             
             <section class="content-section">
                 <h2 class="section-title">一站式服務流程</h2>
