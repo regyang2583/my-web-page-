@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>理想家居 | 新成屋系統櫃設計方案</title>
+    <style>
+        /* --- 全局與字體設定 --- */
+        :root {
+            --primary-dark-blue: #1c3d5a;
+            --primary-medium-blue: #2a6f97;
+            --primary-light-blue: #8ecae6;
+            --background-color: #f0f4f8;
+            --card-background: #ffffff;
+            --text-dark: #333;
+            --text-light: #666;
+            --border-color: #e0e5ec;
+            --gold-accent: #FFD700;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Microsoft JhengHei', 'PingFang TC', sans-serif;
+            background-color: var(--background-color);
+            margin: 0;
+            padding: 0;
+        }
+
+        /* --- 主要容器與頁面切換效果 --- */
+        .site-wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .page-view {
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+        }
+
+        .hidden {
+            opacity: 0;
+            transform: scale(0.98);
+            pointer-events: none;
+            position: absolute; /* 避免佔用空間 */
+            width: 0;
+            height: 0;
+            overflow: hidden;
+        }
+
+        /* --- 網站標頭 --- */
+        .site-header {
+            text-align: center;
+            padding: 30px 20px;
+            background: var(--card-background);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+        .site-header h1 {
+            color: var(--primary-dark-blue);
+            margin: 0;
+            font-size: 2.5em;
+        }
+        .site-header p {
+            color: var(--text-light);
+            font-size: 1.2em;
+            margin-top: 10px;
+        }
+        
+        /* --- 套餐卡片網格 (主頁) --- */
+        #packages-view .packages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+        }
+        .package-card {
+            background-color: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            overflow: hidden;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+        .package-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .image-container { position: relative; }
+        .package-card img {
+            width: 100%;
+            height: 240px;
+            object-fit: cover;
+            display: block;
+            border: 4px solid transparent;
+            transition: border-color 0.3s ease;
+        }
+        .package-card:hover img {
+            border-color: var(--gold-accent);
+        }
+        .card-content { padding: 25px; }
+        .card-content h2 { margin: 0 0 10px 0; color: var(--primary-dark-blue); }
+        .card-content p { color: var(--text-light); line-height: 1.6; min-height: 70px; }
+        .price-bar { height: 10px; border-radius: 5px; background: var(--color); margin: 0 25px; }
+        .tier-1 { --color: linear-gradient(90deg, #a0d2eb, #8ecae6); }
+        .tier-2 { --color: linear-gradient(90deg, #4e89ae, #2a6f97); }
+        .tier-3 { --color: linear-gradient(90deg, #1c3d5a, #012a4a); }
+        .price-range-label { padding: 10px 25px 25px 25px; font-weight: bold; color: var(--text-dark); }
+        
+        /* --- 詳細內容頁面 --- */
+        #details-view .detail-container {
+            background: var(--card-background);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            padding: 40px;
+        }
+        .detail-header { text-align: center; margin-bottom: 40px; }
+        #detail-title { color: var(--primary-dark-blue); font-size: 2.2em; margin: 0; }
+        #detail-subtitle { color: var(--text-light); font-size: 1.2em; }
+        
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 40px;
+            align-items: flex-start;
+        }
+        @media (max-width: 900px) { .details-grid { grid-template-columns: 1fr; } }
+        
+        #detail-hero-image { width: 100%; border-radius: 8px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        
+        .price-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+        .price-table th, .price-table td { padding: 15px; text-align: left; border-bottom: 1px solid var(--border-color); }
+        .price-table th { background-color: #f8f9fa; color: var(--text-dark); }
+        .price-table .price { font-weight: bold; color: var(--primary-dark-blue); font-size: 1.1em; }
+
+        /* --- 專業手風琴 (Accordion) --- */
+        .accordion-item { border-bottom: 1px solid var(--border-color); }
+        .accordion-button { background: none; color: var(--text-dark); cursor: pointer; padding: 18px 5px; width: 100%; border: none; text-align: left; outline: none; font-size: 1.1em; font-weight: 600; display: flex; justify-content: space-between; align-items: center; transition: background-color 0.3s ease; }
+        .accordion-button:hover { background-color: #f8f9fa; }
+        .accordion-button .icon { transition: transform 0.3s ease-out; }
+        .accordion-button.active .icon { transform: rotate(45deg); }
+        .accordion-panel { padding: 0 18px; background-color: white; max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out, padding 0.4s ease-out; }
+        .accordion-panel.show { padding: 15px 18px; }
+        .accordion-panel ul { list-style-type: none; padding-left: 0; }
+        .accordion-panel li { margin-bottom: 12px; line-height: 1.7; position: relative; padding-left: 25px; }
+        .accordion-panel li::before { content: '✓'; color: var(--primary-medium-blue); position: absolute; left: 0; font-weight: bold; }
+        
+        /* --- 按鈕 --- */
+        .button-group { margin-top: 40px; display: flex; gap: 15px; }
+        .btn { padding: 12px 25px; border-radius: 8px; border: none; font-size: 1em; font-weight: bold; cursor: pointer; transition: all 0.3s ease; }
+        .btn-primary { background-color: var(--primary-medium-blue); color: white; }
+        .btn-primary:hover { background-color: var(--primary-dark-blue); }
+        .btn-secondary { background-color: #f1f1f1; color: var(--text-dark); border: 1px solid var(--border-color); }
+        .btn-secondary:hover { background-color: #e0e0e0; }
+
+        /* --- 網站頁尾 --- */
+        .site-footer { text-align: center; margin-top: 40px; padding: 30px; color: var(--text-light); }
+    </style>
+</head>
+<body>
+
+    <div class="site-wrapper">
+        <header class="site-header">
+            <h1>理想家居</h1>
+            <p>新成屋系統櫃設計方案・打造您的夢想空間</p>
+        </header>
+
+        <!-- ======================= 主頁：套餐選擇 ======================= -->
+        <main id="packages-view" class="page-view">
+            <div class="packages-grid">
+                <!-- 套餐一：15坪 (已修復圖片並加入 data-* 屬性) -->
+                <div class="package-card" data-package="15ping">
+                    <div class="image-container">
+                        <img src="https://images.unsplash.com/photo-1615873968403-89e068629265?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1032&q=80" alt="15坪小坪數室內設計">
+                    </div>
+                    <div class="card-content">
+                        <h2>15 坪 小資首選方案</h2>
+                        <p>適合單身或新婚夫妻，麻雀雖小，五臟俱全的精緻規劃，最大化每一寸收納空間。</p>
+                    </div>
+                    <div class="price-bar tier-1"></div>
+                    <p class="price-range-label">價格區間：經濟實惠</p>
+                </div>
+
+                <!-- 套餐二：25坪 -->
+                <div class="package-card" data-package="25ping">
+                    <div class="image-container">
+                        <img src="https://images.unsplash.com/photo-1616046229478-9901c5536a45?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=880&q=80" alt="25坪標準家庭室內設計">
+                    </div>
+                    <div class="card-content">
+                        <h2>25 坪 標準家庭方案</h2>
+                        <p>為 2-3 房格局量身打造，兼顧客餐廳、臥室收納機能與設計美學的完美平衡。</p>
+                    </div>
+                    <div class="price-bar tier-2"></div>
+                    <p class="price-range-label">價格區間：中階均衡</p>
+                </div>
+
+                <!-- 套餐三：30坪 -->
+                <div class="package-card" data-package="30ping">
+                    <div class="image-container">
+                        <img src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80" alt="30坪豪華空間室內設計">
+                    </div>
+                    <div class="card-content">
+                        <h2>30 坪 豪華升級方案</h2>
+                        <p>寬敞空間的極致運用，可規劃獨立更衣室、書房等客製化高級收納設計。</p>
+                    </div>
+                    <div class="price-bar tier-3"></div>
+                    <p class="price-range-label">價格區間：高階訂製</p>
+                </div>
+            </div>
+        </main>
+
+        <!-- ======================= 詳細內容頁 (預設隱藏) ======================= -->
+        <main id="details-view" class="page-view hidden">
+            <div class="detail-container">
+                <header class="detail-header">
+                    <h1 id="detail-title"></h1>
+                    <p id="detail-subtitle">風格預算分析與設計指南</p>
+                </header>
+
+                <div class="details-grid">
+                    <div class="hero-image">
+                        <img id="detail-hero-image" src="" alt="方案預覽圖">
+                    </div>
+                    <div class="content-details">
+                        <h3>各設計風格預算分析</h3>
+                        <table class="price-table">
+                            <thead>
+                                <tr>
+                                    <th>設計風格</th>
+                                    <th>特色與選材</th>
+                                    <th class="price">參考預算區間</th>
+                                </tr>
+                            </thead>
+                            <tbody id="detail-price-table-body">
+                                <!-- JS 會動態填入這裡 -->
+                            </tbody>
+                        </table>
+                        <div class="button-group">
+                            <button id="back-to-packages" class="btn btn-secondary">返回方案列表</button>
+                            <button class="btn btn-primary">立即諮詢</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="knowledge-base" style="margin-top: 40px;">
+                    <div class="accordion-item">
+                        <button class="accordion-button">
+                            <span>系統櫃費用結構解析</span>
+                            <span class="icon">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 0V16M0 8H16" stroke="currentColor" stroke-width="2"/></svg>
+                            </span>
+                        </button>
+                        <div class="accordion-panel">
+                             <ul>
+                                <li><b>櫃體板材 (系統板):</b> 構成櫃體結構，價格受產地、環保等級 (F1/E0)、表面材質影響。</li>
+                                <li><b>門板:</b> 決定風格與質感，從經濟的塑合板到高價的實木貼皮、鋼琴烤漆，價差極大。</li>
+                                <li><b>五金配件:</b> 系統櫃的靈魂，升級進口緩衝五金 (如Blum) 或特殊功能五金 (如轉角小怪物、升降衣桿) 會顯著增加成本。</li>
+                                <li><b>設計與施工費:</b> 包含丈量、繪圖、現場組裝與監管的費用，通常已包含在報價內。</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <button class="accordion-button">
+                            <span>設計風格如何影響您的預算</span>
+                            <span class="icon">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 0V16M0 8H16" stroke="currentColor" stroke-width="2"/></svg>
+                            </span>
+                        </button>
+                         <div class="accordion-panel">
+                            <ul>
+                                <li><b>經濟實惠 (日系/北歐):</b> 選材單純 (淺木紋+白)，工法直接，成本較易控制。</li>
+                                <li><b>中等價位 (現代/工業):</b> 可能使用到烤漆門板、特殊紋理板材或結合鐵件，成本中等偏高。</li>
+                                <li><b>高價位 (侘寂風):</b> 極度要求板材質感，多使用昂貴的進口特殊板材，工法精細，預算最高。</li>
+                            </ul>
+                        </div>
+                    </div>
+                     <div class="accordion-item">
+                        <button class="accordion-button">
+                            <span>聰明裝修：預算控制與實用指南</span>
+                            <span class="icon">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 0V16M0 8H16" stroke="currentColor" stroke-width="2"/></svg>
+                            </span>
+                        </button>
+                         <div class="accordion-panel">
+                            <ul>
+                                <li><b>區分必要與想要:</b> 將預算優先投入最常用的空間，如主臥衣櫃、玄關櫃。</li>
+                                <li><b>材質混搭:</b> 櫃體內部用標準板材，可見的門板使用較好材質來提升質感。</li>
+                                <li><b>投資好五金:</b> 在常用抽屜、櫃門升級進口緩衝五金，大幅提升使用體驗。</li>
+                                <li><b>標準化尺寸:</b> 盡量符合板材標準模矩，減少裁切浪費與特殊加工費。</li>
+                                <li><b>開放與封閉結合:</b> 適度規劃開放層架，成本遠低於有門片的櫃體，也能創造視覺層次。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="site-footer">
+            <p>&copy; 2023 理想家居設計股份有限公司 | 所有價格均為參考值，實際報價需依現場丈量與選材為準。</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- 數據庫 ---
+            const packageData = {
+                '15ping': {
+                    title: '15 坪 小資首選方案',
+                    image: 'https://images.unsplash.com/photo-1615873968403-89e068629265?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1032&q=80',
+                    prices: [
+                        { style: '日系無印風 / 北歐風', features: '淺色木紋搭配白色系，線條簡潔，注重實用性。', range: 'NT$ 18 - 28 萬' },
+                        { style: '現代風 / 工業風', features: '深色、石紋或金屬質感板材，線條俐落，風格強烈。', range: 'NT$ 25 - 38 萬' },
+                        { style: '侘寂風', features: '強調天然質樸手感，使用特殊礦物、水泥質感進口板材。', range: 'NT$ 32 - 45+ 萬' }
+                    ]
+                },
+                '25ping': {
+                    title: '25 坪 標準家庭方案',
+                    image: 'https://images.unsplash.com/photo-1616046229478-9901c5536a45?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=880&q=80',
+                    prices: [
+                        { style: '日系無印風 / 北歐風', features: '淺色木紋搭配白色系，線條簡潔，注重實用性。', range: 'NT$ 30 - 45 萬' },
+                        { style: '現代風 / 工業風', features: '深色、石紋或金屬質感板材，線條俐落，風格強烈。', range: 'NT$ 40 - 60 萬' },
+                        { style: '侘寂風', features: '強調天然質樸手感，使用特殊礦物、水泥質感進口板材。', range: 'NT$ 55 - 75+ 萬' }
+                    ]
+                },
+                '30ping': {
+                    title: '30 坪 豪華升級方案',
+                    image: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
+                    prices: [
+                        { style: '日系無印風 / 北歐風', features: '淺色木紋搭配白色系，線條簡潔，注重實用性。', range: 'NT$ 40 - 60 萬' },
+                        { style: '現代風 / 工業風', features: '深色、石紋或金屬質感板材，線條俐落，風格強烈。', range: 'NT$ 55 - 80 萬' },
+                        { style: '侘寂風', features: '強調天然質樸手感，使用特殊礦物、水泥質感進口板材。', range: 'NT$ 70 - 100+ 萬' }
+                    ]
+                }
+            };
+
+            // --- 元素選擇 ---
+            const packagesView = document.getElementById('packages-view');
+            const detailsView = document.getElementById('details-view');
+            const packageCards = document.querySelectorAll('.package-card');
+            const backButton = document.getElementById('back-to-packages');
+
+            // --- 頁面切換邏輯 ---
+            packageCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const packageId = card.dataset.package;
+                    const data = packageData[packageId];
+                    
+                    // 填入詳細頁面資料
+                    document.getElementById('detail-title').textContent = data.title;
+                    document.getElementById('detail-hero-image').src = data.image;
+                    
+                    const tableBody = document.getElementById('detail-price-table-body');
+                    tableBody.innerHTML = ''; // 清空舊資料
+                    data.prices.forEach(p => {
+                        const row = `
+                            <tr>
+                                <td>${p.style}</td>
+                                <td>${p.features}</td>
+                                <td class="price">${p.range}</td>
+                            </tr>
+                        `;
+                        tableBody.innerHTML += row;
+                    });
+
+                    // 執行切換
+                    packagesView.classList.add('hidden');
+                    detailsView.classList.remove('hidden');
+                    window.scrollTo(0, 0); // 跳到頁面頂部
+                });
+            });
+
+            backButton.addEventListener('click', () => {
+                detailsView.classList.add('hidden');
+                packagesView.classList.remove('hidden');
+                window.scrollTo(0, 0);
+            });
+
+            // --- 手風琴 (Accordion) 邏輯 ---
+            document.querySelectorAll('.accordion-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    const panel = button.nextElementSibling;
+                    button.classList.toggle('active');
+                    
+                    if (panel.style.maxHeight) {
+                        panel.style.maxHeight = null;
+                        panel.classList.remove('show');
+                    } else {
+                        // 先關閉其他已開啟的
+                        document.querySelectorAll('.accordion-panel.show').forEach(openPanel => {
+                           openPanel.style.maxHeight = null;
+                           openPanel.classList.remove('show');
+                           openPanel.previousElementSibling.classList.remove('active');
+                        });
+                        panel.classList.add('show');
+                        panel.style.maxHeight = panel.scrollHeight + "px";
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
