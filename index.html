@@ -227,4 +227,71 @@
                     prices: [
                         { style: '日系無印風 / 北歐風', features: '淺色木紋搭配白色系，線條簡潔，注重實用性。', range: 'NT$ 30 - 45 萬' },
                         { style: '現代風 / 工業風', features: '深色、石紋或金屬質感板材，線條俐落，風格強烈。', range: 'NT$ 40 - 60 萬' },
-                        { style: '侘寂風', feat
+                        { style: '侘寂風', features: '強調天然質樸手感，使用特殊礦物、水泥質感進口板材。', range: 'NT$ 55 - 75+ 萬' }
+                    ]
+                },
+                '30ping': {
+                    title: '30 坪｜寬域奢享家',
+                    image: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=800&q=80',
+                    prices: [
+                        { style: '日系無印風 / 北歐風', features: '淺色木紋搭配白色系，線條簡潔，注重實用性。', range: 'NT$ 40 - 60 萬' },
+                        { style: '現代風 / 工業風', features: '深色、石紋或金屬質感板材，線條俐落，風格強烈。', range: 'NT$ 55 - 80 萬' },
+                        { style: '侘寂風', features: '強調天然質樸手感，使用特殊礦物、水泥質感進口板材。', range: 'NT$ 70 - 100+ 萬' }
+                    ]
+                }
+            };
+            const packagesView = document.getElementById('packages-view');
+            const detailsView = document.getElementById('details-view');
+            const packageCards = document.querySelectorAll('.package-card');
+            const backButton = document.getElementById('back-to-packages');
+
+            packageCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const packageId = card.dataset.package;
+                    const data = packageData[packageId];
+                    document.getElementById('detail-title').textContent = data.title;
+                    document.getElementById('detail-hero-image').src = data.image;
+                    const tableBody = document.getElementById('detail-price-table-body');
+                    tableBody.innerHTML = ''; 
+                    data.prices.forEach(p => {
+                        const row = `<tr><td data-label="設計風格">${p.style}</td><td data-label="特色與選材">${p.features}</td><td class="price">${p.range}</td></tr>`;
+                        tableBody.innerHTML += row;
+                    });
+                    packagesView.classList.add('hidden');
+                    detailsView.classList.remove('hidden');
+                    document.getElementById('top').scrollIntoView();
+                });
+            });
+
+            backButton.addEventListener('click', () => {
+                detailsView.classList.add('hidden');
+                packagesView.classList.remove('hidden');
+                document.getElementById('top').scrollIntoView();
+            });
+
+            document.querySelectorAll('.accordion-button').forEach(button => {
+                button.addEventListener('click', () => {
+                    const panel = button.nextElementSibling;
+                    const wasActive = button.classList.contains('active');
+                    document.querySelectorAll('.accordion-button.active').forEach(activeBtn => {
+                        activeBtn.classList.remove('active');
+                        const activePanel = activeBtn.nextElementSibling;
+                        activePanel.style.maxHeight = null;
+                        activePanel.classList.remove('show');
+                    });
+                    if (!wasActive) {
+                        button.classList.add('active');
+                        panel.classList.add('show');
+                        panel.style.maxHeight = panel.scrollHeight + "px";
+                    }
+                });
+            });
+
+            const copyrightInfo = document.getElementById('copyright-info');
+            const currentYear = new Date().getFullYear();
+            const currentMonth = new Date().getMonth() + 1;
+            copyrightInfo.innerHTML = `&copy; ${currentYear}年${currentMonth}月 域向室內設計股份有限公司 | 所有價格均為參考值，實際報價需依現場丈量與選材為準。`;
+        });
+    </script>
+</body>
+</html>
